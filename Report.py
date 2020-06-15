@@ -14,14 +14,13 @@ def id(sheet):
 
 
 def location(combined_sheet, indices):
-    col_loc = [-1]*(len(indices))
-    temp = 0
+    col_loc = []
     for i in range(len(indices)):
         for j in range(combined_sheet.shape[1]):
             if indices[i] in combined_sheet.columns[j]:
-                col_loc[temp] = j
-                temp = temp+1
+                col_loc.append(j)
     return col_loc
+
 
 def xls2md_table(excel_spreadsheet, file_name, cols, f):
     spreadsheet_sheets = excel_spreadsheet.sheet_names
@@ -50,6 +49,9 @@ def xls2md_table(excel_spreadsheet, file_name, cols, f):
 
     for i in range(combined_sheet.shape[0]):
         for j in range(len(col_loc)):
+            for k in range(len(combined_sheet.iloc[i, col_loc[j]])):
+                if combined_sheet.iloc[i, col_loc[j]][k] == '\n':
+                    combined_sheet.iloc[i, col_loc[j]] = combined_sheet.iloc[i, col_loc[j]][:k-1] + ' <br> ' + combined_sheet.iloc[i, col_loc[j]][k+1:]
             f.write('| ' + combined_sheet.iloc[i,col_loc[j]])
         f.write(' |\n')
     f.write('\n\n\n')
@@ -64,7 +66,7 @@ def xls2md_list(excel_spreadsheet, file_name, cols, f):
 
     indices = cols[2:len(cols) - 1]  # gets a list of names of column headers in a sheet
     for i in range(1, len(sheet)):
-                sheet[i].rename(columns={'_submission__uuid':'_uuid'}, inplace = True)
+        sheet[i].rename(columns={'_submission__uuid':'_uuid'}, inplace = True)
 
     combined_sheet = sheet[0]
     for i in range(1, len(sheet)):
@@ -82,6 +84,7 @@ def xls2md_list(excel_spreadsheet, file_name, cols, f):
         f.write('\n')
     f.write('\n\n\n')
 
+
 cur_path = os.getcwd()  # gets the path where the python file is located
 template_path = cur_path + r'\template'
 path = cur_path + r'\excel'
@@ -96,12 +99,11 @@ dest_path = os.getcwd() + '\\'
 dest_path = dest_path + 'markdown\\'
 dest_path = dest_path + 'report.md'  # destination file for markdown
 f = open(dest_path, 'w')
-print(template_fields)
 
 for file in files:
     filename.append(file[lenpath:len(file) - 5])          #gets the filenames of all the files in the 'excel' folder
 
-print(filename)
+
 for i in range(len(filename)):
     for k in range(len(template_fields)):
         if filename[i] in template_fields[k][1]:
