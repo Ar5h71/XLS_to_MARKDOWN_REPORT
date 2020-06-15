@@ -20,20 +20,46 @@ for f in files:
 for i in range(len(filename)):
     spreadsheet = pd.ExcelFile(files[i])  # opens all the excel files one by one
     spreadsheet_sheets = spreadsheet.sheet_names  # gets the list of names of all the sheets in an excel file
-    dest.write('t,' + filename[i] + ',')
-    for j in range(len(spreadsheet_sheets)):
-        sheet = pd.read_excel(spreadsheet, spreadsheet_sheets[j])  # opens all the sheets in an excel file sequentially
-        sheetname = spreadsheet_sheets[j]
-        dim = sheet.shape
-        col_name = sheet.columns
-        for k in range(dim[1]):
-            if col_name[k][0] != '_':
-                l = len(col_name[k]) - 1
-                while col_name[k][l] != '>' and l > 0:
-                    l = l-1
-                if len(col_name[k]) - l<=40:
-                    if not l:
-                        dest.write(col_name[k] + ',')
-                    else:
-                        dest.write(col_name[k][l+1:] + ',')
-    dest.write("\n")
+    if len(spreadsheet_sheets) <= 2:
+        dest.write('t,' + filename[i] + ',' + spreadsheet_sheets[1] + ',')
+        for j in range(len(spreadsheet_sheets)):
+            sheet = pd.read_excel(spreadsheet, spreadsheet_sheets[j])  # opens all the sheets in an excel file sequentially
+            sheetname = spreadsheet_sheets[j]
+            dim = sheet.shape
+            col_name = sheet.columns
+            for k in range(dim[1]):
+                if col_name[k][0] != '_':
+                    l = len(col_name[k]) - 1
+                    while col_name[k][l] != '>' and l > 0:
+                        l = l-1
+                    if len(col_name[k]) - l<=40:
+                        if not l:
+                            dest.write(col_name[k] + ',')
+                        else:
+                            dest.write(col_name[k][l+1:] + ',')
+        dest.write("\n")
+    else:
+        sheets = []
+        for j in range(len(spreadsheet_sheets)):
+            sheets.append(pd.read_excel(spreadsheet, spreadsheet_sheets[j]))
+        for j in range(len(sheets)):
+            sheets[j].rename(columns={'_submission__uuid':'_uuid'}, inplace=True)
+        temp = pd.merge(sheets[0], sheets[1], on = '_uuid')
+        combined_sheet = []
+        for j in range(len(spreadsheet_sheets)-2):
+            combined_sheet.append(pd.merge(temp, sheets[j+2], on = '_uuid'))
+        for j in range(len(combined_sheet)):
+            dest.write('t,' + filename[i] +',' +spreadsheet_sheets[j+2]+ ',')
+            dim = combined_sheet[j].shape
+            col_name = combined_sheet[j].columns
+            for k in range(dim[1]):
+                if col_name[k][0] != '_':
+                    l = len(col_name[k]) - 1
+                    while col_name[k][l] != '>' and l > 0:
+                        l = l-1
+                    if len(col_name[k]) - l<=40:
+                        if not l:
+                            dest.write(col_name[k] + ',')
+                        else:
+                            dest.write(col_name[k][l+1:] + ',')
+            dest.write('\n')
