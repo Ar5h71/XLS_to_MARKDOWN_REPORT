@@ -1,4 +1,4 @@
-# While downloading reports off from kobo change the 
+# While downloading reports off from kobo change the group separator for excel file from '/' to '>'
 
 ## Step 1: Create the folders named 'excel', 'markdown' and 'template' in the directory where the python files 'headers.py' and 'Report.py' are stored.
 ## Step 2: Copy the excel files, out of which you want to create reports, in the 'excel' folder
