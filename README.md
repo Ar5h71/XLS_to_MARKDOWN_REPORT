@@ -1,3 +1,5 @@
+# While downloading reports off from kobo change the 
+
 ## Step 1: Create the folders named 'excel', 'markdown' and 'template' in the directory where the python files 'headers.py' and 'Report.py' are stored.
 ## Step 2: Copy the excel files, out of which you want to create reports, in the 'excel' folder
 ## Step 3: Run headers.py. It will extract all the column headers in a text file 'template.txt' in the template folder. Each line in the text file represents the columns for a file. The first element of each line is either 't' or 'l', denoting table and list respectively. The second element represents the file name.
