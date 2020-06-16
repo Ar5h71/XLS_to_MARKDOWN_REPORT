@@ -12,6 +12,14 @@ def location(combined_sheet, indices):
     return col_loc
 
 
+def change_date_format(sheet):
+    for i in range(len(sheet)):
+        for j in range(sheet[i].shape[1]):
+            if sheet[i].columns[j][0]!='_' and ('Date' in sheet[i].columns[j]):
+                sheet[i][sheet[i].columns[j]] = pd.to_datetime(sheet[i][sheet[i].columns[j]])
+                sheet[i][sheet[i].columns[j]] = sheet[i][sheet[i].columns[j]].dt.strftime("%m/%d/%y")
+
+
 def xls2md_table(excel_spreadsheet, file_name, cols, f):
     f.write('## ')
     for i in range(file_name.index('_-_')):
@@ -23,7 +31,7 @@ def xls2md_table(excel_spreadsheet, file_name, cols, f):
     sheet = []
     for m in range(len(spreadsheet_sheets)):
         sheet.append(pd.read_excel(excel_spreadsheet, spreadsheet_sheets[m]))
-
+    change_date_format(sheet)
     indices = cols[3:len(cols) - 1]  # gets a list of names of column headers in a sheet
     for i in range(1, len(sheet)):
         sheet[i].rename(columns={'_submission__uuid':'_uuid'}, inplace = True)
@@ -93,6 +101,7 @@ def xls2md_list(excel_spreadsheet, file_name, cols, f):
     for m in range(len(spreadsheet_sheets)):
         sheet.append(pd.read_excel(excel_spreadsheet, spreadsheet_sheets[m]))
 
+    change_date_format(sheet)
     indices = cols[3:len(cols) - 1]  # gets a list of names of column headers in a sheet
     for i in range(1, len(sheet)):
         sheet[i].rename(columns={'_submission__uuid':'_uuid'}, inplace = True)
@@ -119,7 +128,6 @@ def xls2md_list(excel_spreadsheet, file_name, cols, f):
         temp = pd.merge(sheet[0], sheet[1], on='_uuid')
         for i in range(len(sheet) - 2):
             combined_sheet.append(pd.merge(temp, sheet[i + 2], on='_uuid'))
-            print(combined_sheet[i].shape)
         for i in range(len(combined_sheet)):
             for j in range(combined_sheet[i].shape[0]):
                 for k in range(combined_sheet[i].shape[1]):
@@ -161,7 +169,8 @@ for k in range(len(template_fields)):
     for i in range(len(filename)):
         if filename[i] in template_fields[k][1]:
             break
-    spreadsheet = pd.ExcelFile(files[i]) #opens all the excel files one by one
+    spreadsheet = pd.ExcelFile(files[i])   #opens all the excel files one by one
+
     if template_fields[k][0] == 't':
         xls2md_table(spreadsheet, filename[i], template_fields[k],f)     #the function that converts the excel spreadsheet to md
     elif template_fields[k][0] == 'l':
