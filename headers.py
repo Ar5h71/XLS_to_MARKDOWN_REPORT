@@ -59,7 +59,7 @@ def generate_headers(combined_sheet, spreadsheet_sheets):   #this function gener
                             cols.append(col_name[k][l + 1:])
                         index += 1
             col_index = []
-            pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'"))
+            pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'\n"))
             if pqr:
                 for k in range(index):
                     col_index.append(int(input("Enter Output You Want To See At Number " + str(k+1) + "\n" )))
@@ -99,7 +99,7 @@ def generate_headers(combined_sheet, spreadsheet_sheets):   #this function gener
                         cols.append(col_name[k][l + 1:])
                     index += 1
         col_index = []
-        pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'"))
+        pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'\n"))
         if pqr:
             for k in range(index):
                 col_index.append(int(input(
