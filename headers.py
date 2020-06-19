@@ -3,9 +3,9 @@ import glob
 import os
 
 
-def gen_combined_sheet(sheets):            #combines the sheets in the excel file on the basis of unique id column '_uuid'
-    all_sheets = []                        #if there is only one sheet then the sheet itself is returned. if there are two sheets then they both are merged and then returned
-    if len(sheets) == 1:                   #if there are more than two sheets then first sheet and second sheet are combined and the rest of the sheets are merged with these two one by one and returned as a list.
+def gen_combined_sheet(sheets):
+    all_sheets = []
+    if len(sheets) == 1:
         for i in range(sheets[0].shape[0]):
             for j in range(sheets[0].shape[1]):
                 sheets[0].iloc[i,j] = str(sheets[0].iloc[i,j])
@@ -22,19 +22,19 @@ def gen_combined_sheet(sheets):            #combines the sheets in the excel fil
         for i in range(all_sheets[k].shape[0]):
             for j in range(all_sheets[k].shape[1]):
                 all_sheets[k].iloc[i, j] = str(all_sheets[k].iloc[i, j])
-    return all_sheets[1:]
+    return all_sheets
 
 
-def rename_submission__uuid(sheets):     #the unique id column is '_uuid' in the first sheet and '_submission__uuid' in the rest.
-    for j in range(len(sheets)):         #this function renames the '_submission__uuid' to '_uuid' so that the sheets can be merged
+def rename_submission__uuid(sheets):
+    for j in range(len(sheets)):
         sheets[j].rename(columns={'_submission__uuid': '_uuid'}, inplace=True)
     return sheets
 
 
-def generate_headers(combined_sheet, spreadsheet_sheets):   #this function generates the headers and writes them in the template.txt file
-    if len(spreadsheet_sheets)>2:           #if there are more than two sheets i.e. the form differs with category selected.
-        for j in range(len(combined_sheet)):
-            s = str(input("How do you want the output for "+ filename[i] + ' ' + spreadsheet_sheets[j+2] +" ? " +"Press 't' for table and 'l' for list: " + "\n"  ))
+def generate_headers(combined_sheet, spreadsheet_sheets):
+    if len(spreadsheet_sheets)>2:
+        for j in range(1 , len(combined_sheet)):
+            s = str(input("How do you want the output for "+ filename[i] + ' ' + spreadsheet_sheets[j+1] +" ? " +"Press 't' for table and 'l' for list: " + "\n"  ))
             dest.write(s + ',' + filename[i] + ',' + spreadsheet_sheets[j + 1] + ',')
             dim = combined_sheet[j].shape
             col_name = combined_sheet[j].columns
@@ -59,7 +59,7 @@ def generate_headers(combined_sheet, spreadsheet_sheets):   #this function gener
                             cols.append(col_name[k][l + 1:])
                         index += 1
             col_index = []
-            pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'\n"))
+            pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'"))
             if pqr:
                 for k in range(index):
                     col_index.append(int(input("Enter Output You Want To See At Number " + str(k+1) + "\n" )))
@@ -70,7 +70,7 @@ def generate_headers(combined_sheet, spreadsheet_sheets):   #this function gener
                 for m in range(index):
                     dest.write(cols[m] + ',')
                 dest.write('\n')
-    else:                                   #if there is one or two sheets in the excel file.
+    else:
         for n in range(combined_sheet.shape[0]):
             for o in range(combined_sheet.shape[1]):
                 combined_sheet.iloc[n, o] = str(combined_sheet.iloc[n, o])
@@ -99,7 +99,7 @@ def generate_headers(combined_sheet, spreadsheet_sheets):   #this function gener
                         cols.append(col_name[k][l + 1:])
                     index += 1
         col_index = []
-        pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'\n"))
+        pqr = int(input("If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'"))
         if pqr:
             for k in range(index):
                 col_index.append(int(input(
