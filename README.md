@@ -5,7 +5,7 @@ This script extracts the useful headers from the excel files and writes the colu
 # Report.py
 This script writes the data in a file 'report.md' in 'Markdown' folder followinf the format as provided in 'template.txt' file. It also sorts the data according to date in descending order and also converts the format of date in ddmmyyyy with a separator of user's choice.
 # Usage Instructions
-_Note:_ While exporting data off from KoBoToolBox, make sure that the group separators are changed to '>' and 'Include' data from previous versions is unticked.
+_Note:_ While exporting data off from KoBoToolBox, make sure that the group separators are changed to '>' and 'Include data from previous versions' is unticked.
 1. Create the folders named 'excel', 'markdown' and 'template' in the directory where the python files 'headers.py' and 'Report.py' are stored.
 2. Copy the excel files, out of which you want to create reports, in the 'excel' folder
 3. Run headers.py. It will extract all the column headers in a text file 'template.txt' in the template folder. Each line in the text file represents the columns for a file. The first element of each line is either 't' or 'l', denoting table and list respectively. The second element represents the file name. The third element is sheet name and the fourth element onwrds, column headers are written.
