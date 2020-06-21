@@ -1,13 +1,31 @@
-# This file generates the template for the report and writes the template in 'template.txt' file in template folder
+"""
+Headers Generator
 
-# The 'template.txt' file can also later be edited to remove some fields or change the order or type of format for a particular form
+This script allows the user to print all the columns of the excel files present in 'excel' folder as well as write the
+column headers along with the filename, sheetname and the alphabet 't' or 'l' which tells whether the given form will be
+a list or a table in a file called 'template.txt' in the template folder.
 
-# Each line in the template file contains template for each form.
+All the excel files must be of '.xlsx' format.
 
-# The first element of each individual line tells whether the data will be represented in tabular or list form.
-# The second element contains the filename for that particular form.
-# The third element contains the sheetname. It is useful in case of forms where set of questions vary according to catgery selected
-# fourth element onwards, list of all column headers is written
+While exporting data from KoBoToolBox, make sure the group separators are changed to '>' annd 'include previous versions'
+is unticked.
+
+The 'template.txt' file can also later be edited according to user's preference.
+
+The script requires 'pandas' and 'glob' to be installed.
+
+This script can also be called as a module and the relevant parameters can be passed to generate_headers function to
+generate the 'template.txt' file.
+
+The script contains the following functions:
+    * gen_list_sheets - returns a lost of dataframes after combining relevant sheets of the excel file using the '_uuid'
+                       column which contains the unique id for each submission.
+    * rename_submission__uuid - this function renames '_submission__uuid' column to '_uuid' and returns the list of
+                               dataframes with renamed column.
+    * generate headers - This function extracts only the useful column headers, prints them in console, and prompts user
+                         to enter the sequence of the column headers for a particular form if it is to be changed.
+    * main - The main function of the script.
+"""
 
 
 import pandas as pd
@@ -15,7 +33,7 @@ import glob
 import os
 
 
-def gen_combined_sheet(sheets):
+def gen_list_sheets(sheets):
     """
         Returns a list of DataFrames which can be worked upon to generate reports.
 
@@ -76,9 +94,10 @@ def generate_headers(sheets, sheetnames, file_name, dest):
             sheets (list of dataframes): All sheets of the excel file opened as dataframes and stored in a list.
             sheetnames (list of strings): contains names of all the sheets in the excel file.
             file_name (string): name of the file.
-            dest (file object): file object to write the column headers in 'template.txt'.
+            dest (file object): file object thet contains address of 'template.txt' to write the column headers in 'template.txt'.
     """
-    combined_sheet = gen_combined_sheet((sheets))
+    sheets = rename_submission__uuid(sheets)
+    combined_sheet = gen_list_sheets(sheets)
     if len(sheets)>2:  # if the form is multi-category form
         all_sheets = combined_sheet
     else:
@@ -88,10 +107,10 @@ def generate_headers(sheets, sheetnames, file_name, dest):
     for j in range(len(all_sheets)):
         if len(sheets)>2:   # for multi-category forms that have different sets of repeating questions.
             s = str(input("How do you want the output for " + file_name + ' ' + sheetnames[j + 2] + " ? " + "Press 't' for table and 'l' for list: " + "\n"))
-            dest.write(s + ';' + filename[i] + ';' + sheetnames[j + 2] + ';')
+            dest.write(s + ';' + file_name + ';' + sheetnames[j + 2] + ';')
         else:       # for simple forms or forms having only one set of repeating questions.
             s = str(input("How do you want the output for " + file_name + ' ' +  " ? " + "Press 't' for table and 'l' for list: " + "\n"))
-            dest.write(s + ';' + filename[i] +sheetnames[len(sheetnames) - 1]+ ';' +  ';')
+            dest.write(s + ';' + file_name +sheetnames[len(sheetnames) - 1]+ ';' +  ';')
         dim = all_sheets[j].shape
         col_name = all_sheets[j].columns
         index = 0
@@ -129,28 +148,30 @@ def generate_headers(sheets, sheetnames, file_name, dest):
             dest.write('\n')
 
 
-cur_path = os.getcwd()  # gets the path where the python file is located
-path = cur_path + r'\excel'
-files = [f for f in glob.glob(path + '**/*.xlsx', recursive=True)]  # gets the paths for all the excel files stored in 'excel' folder
-filename = []
-lenpath = len(path) + 1
-dest_path = os.getcwd() + '\\'
-dest_path = dest_path + 'template\\'
-dest_path = dest_path + 'template' + '.txt'  # destination file for markdown
-dest = open(dest_path, "w")
+def main():
+    cur_path = os.getcwd()  # gets the path where the python file is located
+    path = cur_path + r'\excel'
+    files = [f for f in glob.glob(path + '**/*.xlsx', recursive=True)]  # gets the paths for all the excel files stored in 'excel' folder
+    filename = []
+    lenpath = len(path) + 1
+    dest_path = os.getcwd() + '\\'
+    dest_path = dest_path + 'template\\'
+    dest_path = dest_path + 'template' + '.txt'  # destination file for markdown
+    dest = open(dest_path, "w")
 
-for f in files:
-    filename.append(f[lenpath:len(f) - 5])  # gets the filenames of all the files in the 'excel' folder
+    for f in files:
+        filename.append(f[lenpath:len(f) - 5])  # gets the filenames of all the files in the 'excel' folder
 
-for i in range(len(filename)):
-    spreadsheet = pd.ExcelFile(files[i])  # opens all the excel files one by one
-    sheetnames = spreadsheet.sheet_names  # gets the list of names of all the sheets in an excel file
+    for i in range(len(filename)):
+        spreadsheet = pd.ExcelFile(files[i])  # opens all the excel files one by one
+        sheetnames = spreadsheet.sheet_names  # gets the list of names of all the sheets in an excel file
 
-    sheets = []
-    for j in range(len(sheetnames)):
-        sheets.append(pd.read_excel(spreadsheet, sheetnames[j]))
+        sheets = []
+        for j in range(len(sheetnames)):
+            sheets.append(pd.read_excel(spreadsheet, sheetnames[j]))
 
-    sheets = rename_submission__uuid(sheets)
+        generate_headers(sheets, sheetnames, filename[i], dest)
 
-    generate_headers(sheets, sheetnames, filename[i], dest)
 
+if __name__ == "__main__":
+    main()
