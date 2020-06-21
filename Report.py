@@ -1,6 +1,28 @@
-# This program generates according to the template provided in 'template.txt' file in the template folder
+"""
+Report generator
 
-# The report is written in Markdown format in 'report.md' file in markdown folder
+This script reads the template from 'template.txt' file in the 'template' folder and generates the report for all the files present in 'excel folder
+according to the template provided by the user. The report is saved in a file 'report.md' in markdown folder. The report
+is generated in Markdown format.
+
+This script works only with '.xlsx' files.
+
+For this script to work, 'pandas' and 'glob' must be installed.
+
+This script contains the following functions:
+   * column_location - returns a list conatining indices of columns in correct sequence according to 'template.txt' file.
+   * date_sort_and_format - returns list of dataframes of all sheets of an excel file after sorting the data in
+                            descending order according to date column (if any) in a sheet. It also converts the date
+                            format to ddmmyyyy with a separator of yser's choice.
+   * gen_list_sheets - returns a lost of dataframes after combining relevant sheets of the excel file using the '_uuid'
+                       column which contains the unique id for each submission.
+   * write_table - writes a dataframe in tabular format in report.md.
+   * write_list - writes a dataframe in list format in report.md.
+   * xls2md - this function determines whether the data for a particular excel file is to be writeen in tabular or list
+              format and invokes wrute_table or write_list functions accordingly.
+   * rename_submission__uuid - this function renames '_submission__uuid' column to '_uuid' and returns the list of
+                               dataframes with renamed column.
+"""
 
 
 import pandas as pd
@@ -115,7 +137,8 @@ def write_table(combined_sheet, column_names, f):
 
 def write_list(combined_sheet, column_names, f):
     """
-    Writes the data of DataFrame in list format in Markdown.
+    Writes the data of DataFrame in list format in Markdown. The function works for basic lists. However, it currently doesn't
+    work for nested list.
 
         Parameters:
             combined_sheet (DataFrame): A Pandas DataFrame whose data is to be written in list Form in Markdown.
