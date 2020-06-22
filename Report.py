@@ -28,6 +28,7 @@ This script contains the following functions:
 import pandas as pd
 import os
 import glob
+import datetime
 
 
 def column_location(spreadsheet, column_names):
@@ -51,8 +52,8 @@ def column_location(spreadsheet, column_names):
 
 def date_sort_and_format(list_sheets, separator):
     """
-    Returns the DataFrame after sorting the data in descending order of date if there is any column that contains date
-    in the DataFrame.
+    Returns the DataFrame after sorting the data in descending order of date or year column if there is any column that
+    contains date or simply year in the DataFrame.
 
         Parameters:
             list_sheets (list of dataframes): a list of Pandas DataFrames.
@@ -67,8 +68,11 @@ def date_sort_and_format(list_sheets, separator):
 
     for j in range(len(all_sheets)):
         for i in range(all_sheets[j].shape[1]):
-            if all_sheets[j].columns[i][0] != '_' and 'Date' in all_sheets[j].columns[i]:
+            if all_sheets[j].columns[i][0] != '_' and 'Date' in all_sheets[j].columns[i]: # finds the column conataining date
                 all_sheets[j][all_sheets[j].columns[i]] = pd.to_datetime(all_sheets[j][all_sheets[j].columns[i]])
+                all_sheets[j] = all_sheets[j].sort_values(by=[all_sheets[j].columns[i]], ascending=False)
+                break
+            elif all_sheets[j].columns[i][0] != '_' and 'Year' in all_sheets[j].columns[i]: # finds the column containing year
                 all_sheets[j] = all_sheets[j].sort_values(by=[all_sheets[j].columns[i]], ascending=False)
                 break
 
@@ -150,11 +154,11 @@ def write_list(combined_sheet, column_names, f):
     for i in range(combined_sheet.shape[0]):
         f.write('- ')
         for j in range(len(col_loc) - 1):
-            if 'nan' in combined_sheet.iloc[i, col_loc[j]]:
+            if combined_sheet.iloc[i, col_loc[j]] == 'nan':
                 continue
             else:
                 f.write(combined_sheet.iloc[i, col_loc[j]] + ', ')
-        if 'nan' not in combined_sheet.iloc[i, col_loc[len(col_loc) - 1]]:
+        if not combined_sheet.iloc[i, col_loc[len(col_loc) - 1]] == 'nan':
             f.write(combined_sheet.iloc[i, col_loc[len(col_loc) - 1]])
         f.write('\n')
     f.write('<br><br><br>\n')
@@ -205,11 +209,6 @@ def xls2md(excel_spreadsheet, file_name, template, f, separator):
     list_sheets = gen_list_sheets(sheets)
     list_sheets = date_sort_and_format(list_sheets, separator)
 
-    for k in range(len(list_sheets)):       # this loop converts all data of DataFrame to string format
-        for i in range(list_sheets[k].shape[0]):
-            for j in range(list_sheets[k].shape[1]):
-                list_sheets[k].iloc[i, j] = str(list_sheets[k].iloc[i, j])
-
     f.write('## **')
 
     for i in range(file_name.index('_-_')):  # determines the form name from file name and converts it to all caps
@@ -220,6 +219,9 @@ def xls2md(excel_spreadsheet, file_name, template, f, separator):
 
     if len(sheets)<=2:         # if the form has single set of repeating questions or no repeating questions
         f.write('**\n')
+        for i in range(list_sheets[0].shape[0]):
+            for j in range(list_sheets[0].shape[1]):
+                list_sheets[0].iloc[i, j] = str(list_sheets[0].iloc[i, j])
         if template[0] == 't':
             write_table(list_sheets[0], column_names, f)
         elif template[0] == 'l':
@@ -229,38 +231,46 @@ def xls2md(excel_spreadsheet, file_name, template, f, separator):
         for l in range(2, len(sheets)):     # checks for the correct sheetname as in the template
             if template[2] == sheetnames[l]:
                 break
+        for i in range(list_sheets[l-2].shape[0]):
+            for j in range(list_sheets[l-2].shape[1]):
+                list_sheets[l-2].iloc[i, j] = str(list_sheets[l-2].iloc[i, j])
         if template[0] == 't':          # l-2 because the categories of form start from sheet number 3.
             write_table(list_sheets[l - 2], column_names, f)
         elif template[0] == 'l':
             write_list(list_sheets[l - 2], column_names, f)
 
 
-cur_path = os.getcwd()
-template_path = cur_path + r'\template'
-path = cur_path + r'\excel'
-template = open(template_path + '\\' + 'template.txt')
-template_fields = template.readlines()      # gets the template for all the forms from 'template.txt' file line by line
+def main():
+    cur_path = os.getcwd()
+    template_path = cur_path + r'\template'
+    path = cur_path + r'\excel'
+    template = open(template_path + '\\' + 'template.txt')
+    template_fields = template.readlines()      # gets the template for all the forms from 'template.txt' file line by line
 
-for i in range(len(template_fields)):
-    template_fields[i] = template_fields[i].split(';')
+    for i in range(len(template_fields)):
+        template_fields[i] = template_fields[i].split(';')
 
-files = [f for f in glob.glob(path + '**/*.xlsx',recursive=True)]  # gets the paths for all the excel files stored in 'excel' folder
-filename = []
-lenpath = len(path) + 1
-dest_path = os.getcwd() + '\\'
-dest_path = dest_path + 'markdown\\'
-dest_path = dest_path + 'report.md'  # destination file for markdown
-sep = str(input("which separator do you want for dates? Please Enter\n"))
-f = open(dest_path, 'w')
+    files = [f for f in glob.glob(path + '**/*.xlsx',recursive=True)]  # gets the paths for all the excel files stored in 'excel' folder
+    filename = []
+    lenpath = len(path) + 1
+    dest_path = os.getcwd() + '\\'
+    dest_path = dest_path + 'markdown\\'
+    dest_path = dest_path + 'report.md'  # destination file for markdown
+    sep = str(input("which separator do you want for dates? Please Enter\n"))
+    f = open(dest_path, 'w')
 
-for file in files:
-    filename.append(file[lenpath:len(file) - 5])  # gets the filenames of all the files in the 'excel' folder
+    for file in files:
+        filename.append(file[lenpath:len(file) - 5])  # gets the filenames of all the files in the 'excel' folder
 
-for k in range(len(template_fields)):
-    for i in range(len(filename)):
-        if filename[i] in template_fields[k][1]:
-            break
-    spreadsheet = pd.ExcelFile(files[i])  # opens all the excel files one by one
-    xls2md(spreadsheet, filename[i], template_fields[k], f, sep)  # the function that converts the excel spreadsheet to md
+    for k in range(len(template_fields)):
+        for i in range(len(filename)):
+            if filename[i] in template_fields[k][1]:
+                break
+        spreadsheet = pd.ExcelFile(files[i])  # opens all the excel files one by one
+        xls2md(spreadsheet, filename[i], template_fields[k], f, sep)  # the function that converts the excel spreadsheet to md
 
-print("All Files have been converted to Markdown")
+    print("All Files have been converted to Markdown")
+
+
+if __name__ == '__main__':
+    main()
