@@ -110,7 +110,7 @@ def generate_headers(sheets, sheetnames, file_name, dest):
             dest.write(s + ';' + file_name + ';' + sheetnames[j + 2] + ';')
         else:       # for simple forms or forms having only one set of repeating questions.
             s = str(input("How do you want the output for " + file_name + ' ' +  " ? " + "Press 't' for table and 'l' for list: " + "\n"))
-            dest.write(s + ';' + file_name +sheetnames[len(sheetnames) - 1]+ ';' +  ';')
+            dest.write(s + ';' + file_name +';'+sheetnames[len(sheetnames) - 1] +  ';')
         dim = all_sheets[j].shape
         col_name = all_sheets[j].columns
         index = 0
