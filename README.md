@@ -14,3 +14,5 @@ _Note:_ While exporting data manually off from KoBoToolBox, make sure that the g
 4. Run headers.py. It will extract all the column headers in a text file 'template.txt' in the template folder. Each line in the text file represents the columns for a file. The first element of each line is either 't' or 'l', denoting table and list respectively. The second element represents the file name. The third element is sheet name and the fourth element onwrds, column headers are written.
 5. Check whether you want a table or a list for a particular file and change the files element of each row accordingly in the text file. Also change the order of columns to your preference in the text file.
 6. After you have decided the order of columns, run 'Report.py'. The report will be generated in a file  by the name 'report.md' in the 'markdown' folder.
+# For creating new forms.
+For creating new forms, refer to [Creating new forms.pdf](https://github.com/Ar5h71/XLS_to_MARKDOWN_REPORT/blob/master/Creating%20new%20forms.pdf). It is also uploaded in this github repo
