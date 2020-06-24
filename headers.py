@@ -36,13 +36,13 @@ import os
 def gen_list_sheets(sheets):
     """
         Returns a list of DataFrames which can be worked upon to generate reports.
-
+        
         This function takes a list of dataframes which are all the sheets in an excel file and merges the relevant sheets
         according to the unique id column '_uuid'.
-
+        
             Parameters:
                 sheets (list of DataFrames): A list of pandas DataFrames. All the sheets of the excel file opened as DataFrames and stored in a list.
-
+            
             Returns:
                 all_sheets (List of DataFrames):A list of DataFrames after performing the merging operation.
     """
@@ -71,13 +71,10 @@ def gen_list_sheets(sheets):
 def rename_submission__uuid(sheets):
     """
        Renames the '_submission__uuid' column to '_uuid'.
-
        The unique id column name is '_uuid' in the first sheet and '_submission__uuid' in the subsequent sheets.
        This function renames '_submission__uuid' to '_uuid' so that the sheets can be merged.
-
            Parameters:
                sheets (list of DataFrames): a list of DataFrames containing data of all the sheets in an excel file.
-
            Returns:
                sheets (list of DataFrames): list of DataFrames with '_submission__uuid' renamed as '_uuid'
     """
@@ -89,7 +86,6 @@ def rename_submission__uuid(sheets):
 def generate_headers(sheets, sheetnames, file_name, dest):
     """
     Writes all the column headers in 'template.txt'.
-
         Parameters:
             sheets (list of dataframes): All sheets of the excel file opened as dataframes and stored in a list.
             sheetnames (list of strings): contains names of all the sheets in the excel file.
@@ -109,7 +105,7 @@ def generate_headers(sheets, sheetnames, file_name, dest):
             s = str(input("How do you want the output for " + file_name + ' ' + sheetnames[j + 2] + " ? " + "Press 't' for table and 'l' for list: " + "\n"))
             dest.write(s + ';' + file_name + ';' + sheetnames[j + 2] + ';')
         else:       # for simple forms or forms having only one set of repeating questions.
-            s = str(input("How do you want the output for " + file_name + ' ' +  " ? " + "Press 't' for table and 'l' for list: " + "\n"))
+            s = str(input("How do you want the output for " + file_name +"? "+ "\n" + "Press 't' for table and 'l' for list: " + "\n"))
             dest.write(s + ';' + file_name +';'+sheetnames[len(sheetnames) - 1] +  ';')
         dim = all_sheets[j].shape
         col_name = all_sheets[j].columns
@@ -125,9 +121,9 @@ def generate_headers(sheets, sheetnames, file_name, dest):
                     if not 'nan' in all_sheets[j].iloc[m, k]:
                         temp = 1
                         break
-                if temp:
-                    if not l:
-                        print(str(index + 1) + ' ' + col_name[k])
+                if temp and col_name[k] not in ["Designation:"]:
+                    if not l :
+                        print(str(index + 1) + '. ' + col_name[k])
                         cols.append(col_name[k])
                     else:
                         print(str(index + 1) + ' ' + col_name[k][l + 1:])
