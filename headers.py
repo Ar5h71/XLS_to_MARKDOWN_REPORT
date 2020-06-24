@@ -113,27 +113,27 @@ def generate_headers(sheets, sheetnames, file_name, dest):
         cols = []
         for k in range(dim[1]):  # prints all the column headers in the console
             temp = 0
-            if col_name[k][0] != '_':
+            if col_name[k][0] != '_':    # omit all the headers beginning with '_'
                 l = len(col_name[k]) - 1
-                while col_name[k][l] != '>' and l > 0:
-                    l = l - 1
+                while col_name[k][l] != '>' and l > 0:   # headers are separated by '>' in a heirarichal fashion of table name then group name etc.
+                    l = l - 1                            #  It extracts the relevant part of headers required.
                 for m in range(dim[0]):
-                    if not 'nan' in all_sheets[j].iloc[m, k]:
+                    if not all_sheets[j].iloc[m, k].lower() == 'nan':      # to omit the empty column headers.
                         temp = 1
                         break
                 if temp and col_name[k] not in ["Designation:"]:
                     if not l :
                         print(str(index + 1) + '. ' + col_name[k])
-                        cols.append(col_name[k])
+                        cols.append(col_name[k])         # stores the required headers in 'cols' list. 
                     else:
                         print(str(index + 1) + ' ' + col_name[k][l + 1:])
-                        cols.append(col_name[k][l + 1:])
+                        cols.append(col_name[k][l + 1:]) # stores the required headers in 'cols' list.
                     index += 1
         col_index = []
         pqr = int(input(
             "If you want the report in the above mentioned sequence, Press '0'" + "\n" + "If you want to give your own sequence, Press '1'\n"))
         if pqr:
-            for k in range(index):  # sorts the column according to the sequence given bu the user
+            for k in range(index):  # sorts the column according to the sequence given by the user
                 col_index.append(int(input("Enter Output You Want To See At Number " + str(k + 1) + "\n")))
             for m in range(len(cols)):
                 dest.write(cols[col_index[m] - 1] + ';')
