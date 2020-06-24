@@ -20,33 +20,7 @@ from urllib.request import Request, urlopen
 ASSET = []
 USERNAME = <enter username>
 PASSWD = <enter password>
-ASSET.append("amdetq7nDGcNq4rRfjgnet")
-ASSET.append("a8yzmyLN5wJP9UFA9yJsLa")
-ASSET.append("aSaKj7uRZgKwz5SjbGGQet")
-ASSET.append("axvyRZNDiLNZqi4iS8zJjk")
-ASSET.append("a3xvLZ2AAxzLqGWY2w5hRy")
-ASSET.append("au8aJqoDqGEg69BKNowmQv")
-ASSET.append("ahpHW2Jub5kBAzjKFyFbqD")
-ASSET.append("awAr5sWzbrjZ55nHMSrqbb")
-ASSET.append("abF9yVvz3rLi84r4sFWyzD")
-ASSET.append("a7kXaSd6qtPxeCrdoFfahT")
-ASSET.append("ajo7u7mPsmF8mKeoxzVq5H")
-ASSET.append("aMFpiDn8dCXy6VC5ZZFdSz")
-ASSET.append("aE4PWxw8jHqjDoqrtEPM98")
-ASSET.append("aMQqdk4PkCpbPQp9Toh9P8")
-ASSET.append("aR5wtj7R3wzs8B4cM89V99")
-ASSET.append("axTdvyDJz5AC8eGtWrDpBQ")
-ASSET.append("aDiNu8aPEg4hKjiGLBNJZh")
-ASSET.append("aKtx8Xj6Ja9yVVeMM82Ysi")
-ASSET.append("agbCFwuN7qDupKgST3QF2C")
-ASSET.append("aysLz7PSRxdsAYBhkVcGCQ")
-ASSET.append("aMgdKdvAWJXvwNakGnKyKC")
-ASSET.append("anWzwxygAHGVv6Rpv9Pgb7")
-ASSET.append("aBYy4qHZh9B8hLmx2qPrcL")
-ASSET.append("aKZLie7pvnVv7XCjyhEwyX")
-ASSET.append("aCYa8pWtTzW3T4qZL9zYCg")
-ASSET.append("aS9jpfphDhHMyWN2juccab")
-ASSET.append("akVoem3MB2n4STceSPFXVk")
+ASSET.append(<Enter the asset for the form which is present in the form url after /forms/")
 DOMAIN = "https://forms.data.hbcse.tifr.res.in/"
 url = []
 
