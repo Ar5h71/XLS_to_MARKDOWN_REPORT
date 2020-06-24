@@ -20,7 +20,7 @@ from urllib.request import Request, urlopen
 ASSET = []
 USERNAME = <enter username>
 PASSWD = <enter password>
-ASSET.append(<Enter the asset for the form which is present in the form url after /forms/")
+ASSET.append(<Enter the asset for the form which is present in the form url after /forms/>)
 DOMAIN = "https://forms.data.hbcse.tifr.res.in/"
 url = []
 
