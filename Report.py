@@ -69,14 +69,14 @@ def date_sort_and_format(list_sheets, separator):
     for j in range(len(all_sheets)):
         for i in range(all_sheets[j].shape[1]):
             if all_sheets[j].columns[i][0] != '_' and 'Date' in all_sheets[j].columns[i]: # finds the column conataining date
-                all_sheets[j][all_sheets[j].columns[i]] = pd.to_datetime(all_sheets[j][all_sheets[j].columns[i]])
-                all_sheets[j] = all_sheets[j].sort_values(by=[all_sheets[j].columns[i]], ascending=False)
+                all_sheets[j][all_sheets[j].columns[i]] = pd.to_datetime(all_sheets[j][all_sheets[j].columns[i]]) # converts all the date to 'datetime' format
+                all_sheets[j] = all_sheets[j].sort_values(by=[all_sheets[j].columns[i]], ascending=False)  # sorts in descending order accrding to first encountered date column.
                 break
             elif all_sheets[j].columns[i][0] != '_' and 'Year' in all_sheets[j].columns[i]: # finds the column containing year
-                all_sheets[j] = all_sheets[j].sort_values(by=[all_sheets[j].columns[i]], ascending=False)
+                all_sheets[j] = all_sheets[j].sort_values(by=[all_sheets[j].columns[i]], ascending=False) # sorts data in descending order according to year if date not present.
                 break
 
-    for j in range(len(all_sheets)):
+    for j in range(len(all_sheets)):   # converts date format to 'ddmmyyyy'
         for i in range(all_sheets[j].shape[1]):
             if all_sheets[j].columns[i][0] != '_' and 'Date' in all_sheets[j].columns[i]:
                 all_sheets[j][all_sheets[j].columns[i]] = pd.to_datetime(all_sheets[j][all_sheets[j].columns[i]])
@@ -133,8 +133,11 @@ def write_table(combined_sheet, column_names, f):
         for j in range(len(col_loc)):
             for k in range(len(combined_sheet.iloc[i, col_loc[j]])):
                 if combined_sheet.iloc[i, col_loc[j]][k] == '\n':
-                    combined_sheet.iloc[i, col_loc[j]] = combined_sheet.iloc[i, col_loc[j]][:k - 1] + ' <br> ' + combined_sheet.iloc[i, col_loc[j]][k + 1:]
-            f.write('| ' + combined_sheet.iloc[i, col_loc[j]])
+                    combined_sheet.iloc[i, col_loc[j]] = combined_sheet.iloc[i, col_loc[j]][:k - 1] + ' <br> ' + combined_sheet.iloc[i, col_loc[j]][k + 1:] # for lists in data
+            if combined_sheet.iloc[i, col_loc[j]].lower() == 'nan': # replaces 'nan' with '-' in tables.
+                f.write('| - ')
+            else:
+                f.write('| ' + combined_sheet.iloc[i, col_loc[j]])
         f.write(' |\n')
     f.write('<br><br><br>\n')
 
@@ -154,12 +157,12 @@ def write_list(combined_sheet, column_names, f):
     for i in range(combined_sheet.shape[0]):
         f.write('- ')
         for j in range(len(col_loc) - 1):
-            if combined_sheet.iloc[i, col_loc[j]] == 'nan':
+            if combined_sheet.iloc[i, col_loc[j]].lower() == 'nan': # omits 'nan' in list format
                 continue
             else:
                 f.write(combined_sheet.iloc[i, col_loc[j]] + ', ')
         if not combined_sheet.iloc[i, col_loc[len(col_loc) - 1]] == 'nan':
-            f.write(combined_sheet.iloc[i, col_loc[len(col_loc) - 1]])
+            f.write(combined_sheet.iloc[i, col_loc[len(col_loc) - 1]] + '.')
         f.write('\n')
     f.write('<br><br><br>\n')
 
