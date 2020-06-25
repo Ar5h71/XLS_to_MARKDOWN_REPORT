@@ -260,7 +260,7 @@ def main():
     dest_path = dest_path + 'markdown\\'
     dest_path = dest_path + 'report.md'  # destination file for markdown
     sep = str(input("which separator do you want for dates? Please Enter\n"))
-    f = open(dest_path, 'w')
+    f = open(dest_path, 'w', encoding="utf-8")
 
     for file in files:
         filename.append(file[lenpath:len(file) - 5])  # gets the filenames of all the files in the 'excel' folder
