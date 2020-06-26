@@ -135,7 +135,7 @@ def write_table(combined_sheet, column_names, f):
                 if combined_sheet.iloc[i, col_loc[j]][k] == '\n':
                     combined_sheet.iloc[i, col_loc[j]] = combined_sheet.iloc[i, col_loc[j]][:k - 1] + ' <br> ' + combined_sheet.iloc[i, col_loc[j]][k + 1:] # for lists in data
             if combined_sheet.iloc[i, col_loc[j]].lower() == 'nan': # replaces 'nan' with '-' in tables.
-                f.write('| - ')
+                f.write('|   ')
             else:
                 f.write('| ' + combined_sheet.iloc[i, col_loc[j]])
         f.write(' |\n')
